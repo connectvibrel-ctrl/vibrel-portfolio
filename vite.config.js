@@ -7,6 +7,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
   server: {
     allowedHosts: ['.lhr.life', '.loca.lt', '.serveousercontent.com'],
     headers: {
@@ -39,15 +42,8 @@ export default defineConfig({
   build: {
     // Source maps off in production to protect business logic
     sourcemap: false,
-    // Minify aggressively
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        // Remove all console logs in production build
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    // Minify natively with esbuild (faster)
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         // Code-split by route for faster initial load
