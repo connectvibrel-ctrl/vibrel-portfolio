@@ -1,0 +1,372 @@
+/* ================================================================
+   VIBREL — IMMERSIVE MINIMALIST DESIGN SYSTEM
+   Editorial · Cinematic · Premium · Calm
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  /* ── COLOR PALETTE ── */
+  --charcoal:       #141414;
+  --charcoal-soft:  #1c1c1c;
+  --charcoal-mid:   #242424;
+  --charcoal-light: #2e2e2e;
+
+  --offwhite:       #F0EDE8;
+  --offwhite-dim:   rgba(240, 237, 232, 0.65);
+  --offwhite-muted: rgba(240, 237, 232, 0.35);
+  --offwhite-faint: rgba(240, 237, 232, 0.08);
+
+  --sage:           #8FA68E;
+  --sage-light:     #a8c1a7;
+  --sage-dim:       rgba(143, 166, 142, 0.5);
+  --sage-glow:      rgba(143, 166, 142, 0.12);
+  --sage-border:    rgba(143, 166, 142, 0.2);
+
+  /* Legacy accent (kept for Work page device glow only) */
+  --accent-primary:        #c8ff00;
+  --accent-glow:           rgba(200, 255, 0, 0.15);
+  --accent-glow-strong:    rgba(200, 255, 0, 0.3);
+
+  /* Semantic aliases */
+  --bg-primary:    var(--charcoal);
+  --bg-secondary:  var(--charcoal-soft);
+  --bg-card:       var(--charcoal-mid);
+  --bg-glass:      rgba(20, 20, 20, 0.7);
+  --bg-glass-hover:rgba(30, 30, 30, 0.8);
+
+  --text-primary:   var(--offwhite);
+  --text-secondary: var(--offwhite-dim);
+  --text-tertiary:  var(--offwhite-muted);
+  --text-accent:    var(--sage);
+
+  --border-subtle:  rgba(240, 237, 232, 0.06);
+  --border-medium:  rgba(240, 237, 232, 0.12);
+  --border-accent:  var(--sage-border);
+
+  /* ── TYPOGRAPHY ── */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:    'Space Mono', monospace;
+
+  --fs-hero:    clamp(5rem, 13vw, 13rem);
+  --fs-h1:      clamp(3rem, 7vw, 7rem);
+  --fs-h2:      clamp(2.2rem, 4.5vw, 4.5rem);
+  --fs-h3:      clamp(1.5rem, 2.5vw, 2.2rem);
+  --fs-h4:      clamp(1.1rem, 1.5vw, 1.4rem);
+  --fs-body:    clamp(0.9rem, 1vw, 1.05rem);
+  --fs-small:   0.8125rem;
+  --fs-label:   0.6875rem;
+
+  /* ── SPACING ── */
+  --space-xs:      0.5rem;
+  --space-sm:      1rem;
+  --space-md:      1.5rem;
+  --space-lg:      2.5rem;
+  --space-xl:      4rem;
+  --space-2xl:     6rem;
+  --space-3xl:     10rem;
+  --space-section: clamp(7rem, 14vh, 14rem);
+
+  /* ── LAYOUT ── */
+  --max-width:   1440px;
+  --content-width: 1240px;
+  --padding-x:   clamp(1.5rem, 5vw, 6rem);
+
+  /* ── RADII ── */
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   32px;
+  --radius-full: 9999px;
+
+  /* ── SHADOWS ── */
+  --shadow-sm:         0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md:         0 8px 40px rgba(0,0,0,0.5);
+  --shadow-lg:         0 24px 80px rgba(0,0,0,0.6);
+  --shadow-sage:       0 0 60px rgba(143, 166, 142, 0.08);
+  --shadow-sage-strong:0 0 100px rgba(143, 166, 142, 0.15);
+
+  /* ── EASING ── */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-cinematic: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* ── TRANSITIONS ── */
+  --dur-fast:   0.2s;
+  --dur-normal: 0.45s;
+  --dur-slow:   0.8s;
+  --dur-slower: 1.2s;
+}
+
+/* ================================================================
+   RESET & BASE
+   ================================================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #141414; /* Prevent white bars on mobile scroll */
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  background: transparent;
+  line-height: 1.65;
+  min-height: 100%;
+}
+
+/* ── VANTA BACKGROUND ── */
+#vanta-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; 
+  min-height: 100vh;
+  min-height: 100dvh; /* For mobile address bar resizing */
+  z-index: -1;
+  background-color: #141414;
+  pointer-events: none;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
+ul, ol { list-style: none; }
+
+/* ================================================================
+   SCROLLBAR
+   ================================================================ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--charcoal); }
+::-webkit-scrollbar-thumb { background: var(--charcoal-light); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sage-dim); }
+
+::selection { background: var(--sage); color: var(--charcoal); }
+
+/* ================================================================
+   UTILITY
+   ================================================================ */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--padding-x);
+}
+
+.content-width {
+  max-width: var(--content-width);
+  margin: 0 auto;
+}
+
+.overline {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.section-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+  line-height: 1.75;
+  max-width: 520px;
+}
+
+.text-accent { color: var(--sage); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+
+/* ================================================================
+   GLASSMORPHISM CARD
+   ================================================================ */
+.glass-card {
+  background: rgba(28, 28, 28, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--dur-normal) var(--ease-out),
+              box-shadow var(--dur-normal) var(--ease-out),
+              transform var(--dur-normal) var(--ease-out);
+}
+
+.glass-card:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-sage);
+  transform: translateY(-3px);
+}
+
+/* ================================================================
+   BUTTONS
+   ================================================================ */
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 2.2rem;
+  background: var(--sage);
+  color: var(--charcoal);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+  transition: all var(--dur-normal) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-accent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: translateX(-100%);
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.btn-accent:hover {
+  background: var(--sage-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sage-strong);
+}
+
+.btn-accent:hover::before { transform: translateX(100%); }
+
+.btn-accent.btn-large {
+  padding: 1.2rem 3rem;
+  font-size: var(--fs-small);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 2.2rem;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  transition: all var(--dur-normal) var(--ease-out);
+}
+
+.btn-ghost:hover {
+  border-color: var(--sage);
+  color: var(--sage);
+  box-shadow: var(--shadow-sage);
+}
+
+/* ================================================================
+   PAGE TRANSITIONS
+   ================================================================ */
+.page-transition-enter {
+  clip-path: circle(0% at 50% 50%);
+  opacity: 0;
+}
+
+.page-transition-enter-active {
+  clip-path: circle(150% at 50% 50%);
+  opacity: 1;
+  transition: clip-path 0.85s var(--ease-cinematic), opacity 0.4s ease;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.4s var(--ease-cinematic), transform 0.4s var(--ease-cinematic);
+}
+
+/* ================================================================
+   NOISE OVERLAY
+   ================================================================ */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 9998;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* ================================================================
+   MAGNETIC CURSOR
+   ================================================================ */
+.mag-cursor-dot,
+.mag-cursor-ring {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99999;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+.mag-cursor-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--offwhite);
+  transition: width 0.2s, height 0.2s, background 0.2s;
+}
+
+.mag-cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--sage);
+  opacity: 0.6;
+  transition: width 0.35s var(--ease-out),
+              height 0.35s var(--ease-out),
+              opacity 0.35s,
+              border-color 0.35s;
+}
+
+.mag-cursor-dot.expanded { width: 10px; height: 10px; background: var(--sage); }
+.mag-cursor-ring.expanded { width: 60px; height: 60px; opacity: 0.9; border-color: var(--sage-light); }
+.mag-cursor-dot.hidden,
+.mag-cursor-ring.hidden { opacity: 0; }
+
+/* ================================================================
+   SCROLL REVEAL — base states (GSAP takes over)
+   ================================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+}

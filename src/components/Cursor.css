@@ -1,0 +1,59 @@
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-primary);
+  border-radius: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+.cursor-outline {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--accent-secondary);
+  border-radius: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9998;
+  transition: width 0.2s, height 0.2s, background-color 0.2s, transform 0.1s ease-out;
+}
+
+.cursor-dot.hidden,
+.cursor-outline.hidden {
+  opacity: 0;
+}
+
+.cursor-dot.clicked {
+  transform: translate(-50%, -50%) scale(0.7);
+  background-color: #fff;
+}
+
+.cursor-outline.clicked {
+  transform: translate(-50%, -50%) scale(0.8);
+  border-color: #fff;
+}
+
+.cursor-dot.hovered {
+  width: 0;
+  height: 0;
+}
+
+.cursor-outline.hovered {
+  width: 60px;
+  height: 60px;
+  background-color: var(--accent-glow-strong);
+  border-color: transparent;
+  backdrop-filter: blur(2px);
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse), (max-width: 768px) {
+  .cursor-dot,
+  .cursor-outline {
+    display: none !important;
+  }
+}

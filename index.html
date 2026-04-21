@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Security meta tags -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
+    <!-- Viewport & PWA -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#141414" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/Vibrel.jpeg" />
+    <link rel="apple-touch-icon" href="/Vibrel.jpeg" />
+
+    <!-- Default SEO fallback (react-helmet-async overrides per-page) -->
+    <title>Vibrel — Engineering Digital Dominance</title>
+    <meta name="description" content="Vibrel is a premium web design and digital growth agency based in Delhi, India. We engineer immersive, conversion-focused digital experiences." />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="vanta-bg"></div>
+    <div id="root"></div>
+
+    <script src="/three.r134.min.js"></script>
+    <script src="/vanta.dots.min.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        if (typeof VANTA === 'undefined' || typeof VANTA.DOTS !== 'function') return;
+        VANTA.DOTS({
+          el: '#vanta-bg',
+          mouseControls: true,
+          touchControls: false,
+          gyroControls: false,
+          minHeight: 200,
+          minWidth: 200,
+          scale: 1,
+          scaleMobile: 1,
+          color: 0x8fa68e,
+          color2: 0x8fa68e,
+          backgroundColor: 0x141414,
+          size: 2.5,
+          spacing: 40,
+          showLines: false,
+        });
+      });
+    </script>
+
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
