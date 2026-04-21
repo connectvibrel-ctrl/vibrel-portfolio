@@ -10,8 +10,8 @@ export default defineConfig({
   server: {
     allowedHosts: ['.lhr.life', '.loca.lt', '.serveousercontent.com'],
     headers: {
-      // Prevent clickjacking
-      'X-Frame-Options': 'DENY',
+      // Prevent clickjacking but allow local framing for portfolio components
+      'X-Frame-Options': 'SAMEORIGIN',
       // Prevent MIME-type sniffing
       'X-Content-Type-Options': 'nosniff',
       // Force HTTPS
