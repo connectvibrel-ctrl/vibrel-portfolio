@@ -51,11 +51,14 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Code-split by route for faster initial load
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'gsap-vendor': ['gsap'],
-          'lenis-vendor': ['lenis'],
-        },
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'react-vendor';
+            if (id.includes('gsap')) return 'gsap-vendor';
+            if (id.includes('lenis') || id.includes('@studio-freight/lenis')) return 'lenis-vendor';
+            return 'vendor'; // Fallback for other modules
+          }
+        }
       },
     },
   },
