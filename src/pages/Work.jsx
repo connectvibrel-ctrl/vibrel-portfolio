@@ -1,74 +1,34 @@
-import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import './PageStyles.css';
-
-gsap.registerPlugin(ScrollTrigger);
+import './Work.css';
 
 const Work = () => {
-  const showcaseRef = useRef(null);
-
-  useEffect(() => {
-    let ctx = gsap.context(() => {
-      gsap.from(showcaseRef.current, {
-        scrollTrigger: {
-          trigger: showcaseRef.current,
-          start: 'top 95%',
-          end: 'bottom bottom',
-          scrub: 1,
-        },
-        rotationX: 10,
-        rotationY: -5,
-        y: 50,
-        transformPerspective: 2000,
-        ease: 'none'
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <div className="work-page">
+    <div className="work-dev-page">
       <SEO
-        title="Our Work & Portfolio | Vibrel Web Agency"
-        description="Browse Vibrel's portfolio of premium web projects. See how we transformed The Drool Company into a full-stack restaurant digital experience — immersive design, local SEO, and conversion-focused architecture."
+        title="Portfolio Archive — In Development | Vibrel Studio"
+        description="Vibrel Media Production archive and full portfolio showcase is currently in development process."
         path="/work"
-        additionalSchema={{
-          '@context': 'https://schema.org',
-          '@type': 'CollectionPage',
-          name: 'Vibrel Portfolio',
-          description: 'A showcase of premium web projects built by Vibrel for ambitious restaurant and lifestyle brands.',
-          url: 'https://vibrel.in/work',
-          author: { '@id': 'https://vibrel.in/#organization' },
-          hasPart: [{
-            '@type': 'CreativeWork',
-            name: 'The Drool Company — Restaurant Digital Experience',
-            description: 'Full-stack restaurant website with immersive scroll animations, local SEO dominance, and seamless online ordering integration.',
-            author: { '@id': 'https://vibrel.in/#organization' },
-          }]
-        }}
       />
-      <div className="container">
-        <div className="work-hero">
-          <p className="overline" style={{ marginBottom: '1rem' }}>Featured Architecture</p>
-          <h1 className="work-hero-title section-title">Selected<br /><em>Work</em></h1>
-          <p className="work-desc">
-            An interactive showcase of our capabilities. Scroll directly within the devices below to experience "The Drool Company" — a full-stack restaurant digital experience we built from the ground up.
-          </p>
-        </div>
 
-        <div className="device-showcase-container" ref={showcaseRef}>
-          <div className="device-macbook">
-            <div className="macbook-screen">
-              <iframe sandbox="allow-scripts allow-same-origin" src="/drool-comp/index.html" title="Drool Company Desktop" loading="lazy" />
-            </div>
-          </div>
+      <div className="work-dev-card glass-card text-center">
+        <span className="work-dev-badge">STUDIO ARCHIVE</span>
+        <h1 className="work-dev-title">
+          In <em>Development</em> Process
+        </h1>
+        <p className="work-dev-desc">
+          Our complete media production showcase, client case studies, and 4K cinema reel library are currently under active curation.
+        </p>
 
-          <div className="device-iphone">
-            <div className="iphone-notch"></div>
-            <iframe sandbox="allow-scripts allow-same-origin" src="/drool-comp/index.html" title="Drool Company Mobile" loading="lazy" />
-          </div>
+        <div className="work-dev-actions">
+          <Link to="/" className="btn-accent hover-target">
+            ← Return to Home Showcase
+          </Link>
+          <Link to="/contact" className="btn-ghost hover-target">
+            Book Production Shoot
+          </Link>
         </div>
       </div>
     </div>

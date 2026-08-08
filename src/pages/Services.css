@@ -1,0 +1,164 @@
+.services-page {
+  padding-top: 100px;
+  background-color: #0b0c10;
+  color: #f0ede8;
+  min-height: 100vh;
+}
+
+.services-hero {
+  padding: 5rem 0 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.services-hero-title {
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  font-weight: 700;
+  margin: 1rem 0;
+}
+
+.services-hero-title em {
+  font-style: italic;
+  font-family: serif;
+  color: #e6c875;
+}
+
+.services-hero-desc {
+  font-size: 1.15rem;
+  color: #a09d96;
+  max-width: 640px;
+}
+
+.services-list-section {
+  padding: 5rem 0;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.serv-card {
+  padding: 2.25rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.35s ease;
+}
+
+.serv-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(230, 200, 117, 0.4);
+}
+
+.serv-num {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #e6c875;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.serv-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #f0ede8;
+  margin-bottom: 0.75rem;
+}
+
+.serv-desc {
+  font-size: 0.95rem;
+  color: #a09d96;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.serv-deliverables {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.25rem;
+}
+
+.serv-deliv-lbl {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #e6c875;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.serv-deliv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.serv-chip {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #c5c2bb;
+}
+
+.workflow-section {
+  padding: 6rem 0;
+  background: rgba(255, 255, 255, 0.015);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 3.5rem;
+}
+
+.workflow-step {
+  padding: 2.25rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.workflow-phase {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #10b981;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.workflow-name {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #f0ede8;
+  margin-bottom: 0.75rem;
+}
+
+.workflow-details {
+  font-size: 0.95rem;
+  color: #a09d96;
+  line-height: 1.6;
+}
+
+.services-cta-section {
+  padding: 6rem 0;
+}
+
+.services-cta-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #f0ede8;
+  margin-bottom: 1rem;
+}
+
+.services-cta-desc {
+  color: #a09d96;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}

@@ -1,0 +1,64 @@
+.work-dev-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 2rem 5rem;
+  background-color: #0b0c10;
+  color: #f0ede8;
+}
+
+.work-dev-card {
+  width: 100%;
+  max-width: 650px;
+  padding: 4rem 3rem;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.work-dev-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 100px;
+  background: rgba(230, 200, 117, 0.12);
+  border: 1px solid rgba(230, 200, 117, 0.3);
+  color: #e6c875;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+.work-dev-title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: #f0ede8;
+  margin-bottom: 1rem;
+  line-height: 1.15;
+}
+
+.work-dev-title em {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: #e6c875;
+}
+
+.work-dev-desc {
+  font-size: 1.05rem;
+  color: #a09d96;
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+}
+
+.work-dev-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}

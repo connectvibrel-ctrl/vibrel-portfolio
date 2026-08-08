@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
-const NAV_PATHS = ['/', '/services', '/work', '/contact'];
-const NAV_LABELS = ['Home', 'Services', 'Work', 'Contact'];
+const NAV_PATHS = ['/', '/work', '/services', '/web-services', '/contact'];
+const NAV_LABELS = ['Home', 'Production Work', 'Services', 'Web Studio', 'Contact'];
 
 const Navbar = () => {
   const [scrolled, setScrolled]       = useState(false);
@@ -44,7 +44,6 @@ const Navbar = () => {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  // ── Y-axis proximity detection (allows scrubbing blank space) ──
   const getPathFromY = useCallback((y) => {
     const links = document.querySelectorAll('[data-path]');
     let closestPath = null;
@@ -60,7 +59,6 @@ const Navbar = () => {
     return closestPath;
   }, []);
 
-  // ── Touch gesture handlers ──
   const handleTouchStart = useCallback((e) => {
     const { clientY } = e.touches[0];
     hoverTimer.current = setTimeout(() => {
@@ -97,7 +95,7 @@ const Navbar = () => {
           </Link>
 
           <div className="nav-desktop">
-            {NAV_PATHS.slice(0, 4).map((path, i) => (
+            {NAV_PATHS.map((path, i) => (
               <NavLink
                 key={path}
                 to={path}
@@ -107,7 +105,7 @@ const Navbar = () => {
                 {NAV_LABELS[i]}
               </NavLink>
             ))}
-            <Link to="/contact" className="nav-cta hover-target">Start Project</Link>
+            <Link to="/contact" className="nav-cta hover-target">Book Shoot</Link>
           </div>
 
           <button
@@ -156,7 +154,7 @@ const Navbar = () => {
           </nav>
           <div className="fs-menu__footer">
             <a
-              href="https://wa.me/918882636063?text=Hi!%20Can%20we%20connect%20to%20discuss%20a%20potential%20website%20project"
+              href="https://wa.me/918882636063?text=Hi!%20Can%20we%20connect%20to%20discuss%20a%20potential%20production%20or%20web%20project"
               target="_blank"
               rel="noopener noreferrer"
               className="hover-target"

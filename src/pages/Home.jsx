@@ -1,51 +1,17 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
+import VideoModal from '../components/VideoModal';
+import {
+  FEATURED_SHOWREEL,
+  PRODUCTION_PROJECTS
+} from '../data/projectsData';
 import './Home.css';
-import img1 from '../assets/img_1.png';
-import img2 from '../assets/img_2.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Static data outside component — no re-creation on re-render ──
-const BENTO_CARDS = [
-  {
-    title: 'Local SEO\nDominance',
-    desc: 'Outrank competitors in local searches. We structure your site to dominate high-intent queries and discovery networks.',
-    large: true,
-  },
-  {
-    title: 'Digital\nImmersion',
-    desc: 'Translate your essence into a digital experience through your own story.',
-  },
-  {
-    title: 'Sales\nMachine',
-    desc: 'Stop settling for brochures that just sit there. We build lightning-fast websites that turn clicks into paying customers.',
-  },
-  {
-    title: 'Owning\nthe Data',
-    desc: 'Stop relying on third-party platforms. Capture first-party data and drive direct conversions effortlessly.',
-  },
-];
-
-const TESTIMONIALS = [
-  {
-    quote: '"Vibrel transformed our online presence entirely. We saw a 300% increase in direct conversions within the first two months."',
-    name: 'Shewta Basin',
-    role: 'Manager, Glow Cafe',
-    img: img1,
-  },
-  {
-    quote: '"Vibrel built exactly what I needed and made the entire website process effortless. Anytime I reach out with a question or tweak, they are on it immediately!"',
-    name: 'Siddhant Malik',
-    role: 'Owner, Matto Bakery',
-    img: img2,
-  },
-];
-
-// ── Character-split word component for hero animation ──
 const SplitWord = ({ word, color, wKey }) => (
   <span style={{ display: 'inline-flex' }}>
     {word.split('').map((char, i) => (
@@ -58,72 +24,150 @@ const SplitWord = ({ word, color, wKey }) => (
   </span>
 );
 
+const AutoplayVideoCard = ({ project, isUnmuted, onAudioToggle, onSelect, registerRef }) => {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = !isUnmuted;
+      if (isUnmuted) {
+        video.play().then(() => setIsPlaying(true)).catch(() => {});
+      }
+    }
+  }, [isUnmuted]);
+
+  const handlePlayAttempt = (e) => {
+    if (e.target.tagName === 'BUTTON') return;
+    const video = videoRef.current;
+    if (video) {
+      if (video.paused) {
+        video.play().then(() => setIsPlaying(true)).catch(() => {});
+      } else {
+        video.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const handleVideoReady = (e) => {
+    const video = e.target;
+    if (video) {
+      video.muted = !isUnmuted;
+      video.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    }
+  };
+
+  return (
+    <div className="prod-work-card glass-card clean-video-card">
+      <div className="prod-card-media-wrap clean-video-wrap" onClick={handlePlayAttempt}>
+        <video
+          ref={(el) => {
+            videoRef.current = el;
+            registerRef(project.id, el);
+          }}
+          src={project.videoUrl}
+          autoPlay
+          loop
+          muted={!isUnmuted}
+          playsInline
+          controls
+          controlsList="nodownload noremoteplayback noplaybackrate"
+          disablePictureInPicture
+          disableRemotePlayback
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
+          preload="auto"
+          onLoadedData={handleVideoReady}
+          onCanPlay={handleVideoReady}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          className="clean-video-element"
+        />
+        {!isPlaying && (
+          <div className="video-play-prompt-overlay">
+            <button className="play-prompt-btn" type="button" onClick={handlePlayAttempt}>
+              ▶ Play Video
+            </button>
+          </div>
+        )}
+        <div className="video-controls-overlay">
+          <button
+            type="button"
+            className={`audio-toggle-btn ${isUnmuted ? 'unmuted' : ''}`}
+            onClick={(e) => onAudioToggle(e, project.id)}
+            aria-label={isUnmuted ? 'Mute audio' : 'Unmute audio'}
+          >
+            {isUnmuted ? '🔊 Sound On' : '🔇 Mute'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Home = () => {
   const rootRef = useRef(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [unmutedVideoId, setUnmutedVideoId] = useState(null);
+  const videoRefs = useRef({});
+
+  const registerVideoRef = useCallback((id, el) => {
+    if (el) {
+      videoRefs.current[id] = el;
+    }
+  }, []);
+
+  const handleAudioToggle = (e, projectId) => {
+    e.stopPropagation();
+    const nextUnmutedId = unmutedVideoId === projectId ? null : projectId;
+    setUnmutedVideoId(nextUnmutedId);
+
+    Object.keys(videoRefs.current).forEach((id) => {
+      const videoEl = videoRefs.current[id];
+      if (videoEl) {
+        if (id === nextUnmutedId) {
+          videoEl.muted = false;
+          videoEl.play().catch(() => {});
+        } else {
+          videoEl.muted = true;
+        }
+      }
+    });
+  };
 
   const runAnimations = useCallback(() => {
     const ctx = gsap.context(() => {
-
-      /* ── Hero entrance ── */
-      gsap.from('.hero-eyebrow', {
-        y: 20, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.4,
-      });
+      /* Hero Entrance */
+      gsap.from('.hero-eyebrow', { y: 20, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
       gsap.from('.hero-title-word', {
         y: '110%',
         duration: 1.35,
         ease: 'power4.out',
-        stagger: window.innerWidth < 768 ? 0 : 0.08,
-        delay: 0.55,
+        stagger: window.innerWidth < 768 ? 0 : 0.06,
+        delay: 0.45,
       });
-      gsap.from('.hero-desc', {
-        y: 30, opacity: 0, duration: 1.1, ease: 'power3.out', delay: 1.1,
-      });
-      gsap.from('.hero-actions', {
-        y: 20, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 1.4,
+      gsap.from('.hero-desc', { y: 30, opacity: 0, duration: 1.1, ease: 'power3.out', delay: 1 });
+      gsap.from('.hero-actions', { y: 20, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 1.2 });
+
+      /* Production Works Reveal */
+      gsap.from('.prod-work-card', {
+        scrollTrigger: { trigger: '.prod-works-grid', start: 'top 80%' },
+        y: 60, opacity: 0, duration: 1.1, stagger: 0.12, ease: 'power4.out'
       });
 
-      /* ── Watermark parallax ── */
-      gsap.to('.hero-watermark', {
-        scrollTrigger: {
-          trigger: '.hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-        y: '-25%',
-        ease: 'none',
-      });
-
-      /* ── Bento reveal ── */
+      /* Bento Capabilities Reveal */
       gsap.from('.bento-card', {
-        scrollTrigger: { trigger: '.bento-grid', start: 'top 75%' },
-        y: 60, opacity: 0, duration: 1.1, stagger: 0.12, ease: 'power4.out',
+        scrollTrigger: { trigger: '.bento-grid', start: 'top 80%' },
+        y: 50, opacity: 0, duration: 1, stagger: 0.1, ease: 'power3.out'
       });
 
-      /* ── Statement parallax ── */
-      gsap.to('.statement-text', {
-        scrollTrigger: {
-          trigger: '.statement-section',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
-        y: '-12%',
-        ease: 'none',
+      /* Stats Counter Reveal */
+      gsap.from('.stat-box', {
+        scrollTrigger: { trigger: '.prod-stats-bar', start: 'top 85%' },
+        y: 40, opacity: 0, duration: 1, stagger: 0.12, ease: 'power3.out'
       });
-
-      /* ── Testimonial reveal ── */
-      gsap.from('.testimonial-block', {
-        scrollTrigger: { trigger: '.testimonials-section', start: 'top 75%' },
-        y: 50, opacity: 0, duration: 1.2, stagger: 0.18, ease: 'power4.out',
-      });
-
-      /* ── Footer CTA ── */
-      gsap.from('.footer-cta-title', {
-        scrollTrigger: { trigger: '.site-footer', start: 'top 80%' },
-        y: 60, opacity: 0, duration: 1.3, ease: 'power4.out',
-      });
-
     }, rootRef);
 
     return ctx;
@@ -131,61 +175,76 @@ const Home = () => {
 
   useEffect(() => {
     const ctx = runAnimations();
-    return () => ctx.revert();
+    const timer = setTimeout(() => {
+      Object.values(videoRefs.current).forEach((videoEl) => {
+        if (videoEl) {
+          videoEl.muted = true;
+          videoEl.play().catch(() => {});
+        }
+      });
+    }, 150);
+    return () => {
+      clearTimeout(timer);
+      ctx.revert();
+    };
   }, [runAnimations]);
 
   return (
     <div ref={rootRef}>
       <SEO
-        title="Premium Web Design Agency Delhi | Engineering Digital Dominance"
-        description="Vibrel is Delhi's premium web design and digital growth agency. We engineer immersive, data-driven websites that dominate local SEO, captivate audiences, and convert visitors into loyal customers. Serving restaurants, cafes, bars and ambitious brands across India."
+        title="Vibrel — Premiere Media Production House | Brand Ads, Commercials & Event Coverage"
+        description="Vibrel is a cinematic media production house and creative studio based in Delhi NCR, specializing in brand films, commercial ad filming, event coverage, and high-conversion visual storytelling across India."
         path="/"
-        additionalSchema={{
-          '@context': 'https://schema.org',
-          '@type': 'WebPage',
-          '@id': 'https://vibrel.in/#webpage',
-          url: 'https://vibrel.in/',
-          name: 'Vibrel — Engineering Digital Dominance',
-          isPartOf: { '@id': 'https://vibrel.in/#website' },
-          about: { '@id': 'https://vibrel.in/#organization' },
-          description: 'Premium web design and digital growth agency based in Delhi, India.',
-          breadcrumb: {
-            '@type': 'BreadcrumbList',
-            itemListElement: [{
-              '@type': 'ListItem',
-              position: 1,
-              name: 'Home',
-              item: 'https://vibrel.in/'
-            }]
-          }
-        }}
       />
 
-      {/* ══════════════ HERO ══════════════ */}
+      {/* ══════════════ HERO SECTION ══════════════ */}
       <section className="hero" aria-label="Hero">
         <div className="hero-watermark" aria-hidden="true">VIBREL</div>
-        <div className="hero-glow"      aria-hidden="true" />
+        <div className="hero-glow" aria-hidden="true" />
+
+        <div className="hero-video-bg">
+          <video
+            src={FEATURED_SHOWREEL.videoUrl}
+            autoPlay
+            loop
+            muted
+            playsInline
+            controlsList="nodownload noremoteplayback noplaybackrate"
+            disablePictureInPicture
+            disableRemotePlayback
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+            className="hero-bg-media"
+          />
+          <div className="hero-video-overlay" />
+        </div>
 
         <div className="hero-content">
-          <p className="hero-eyebrow overline">Vibrel — Web Solutions</p>
+          <p className="hero-eyebrow overline">Vibrel — Cinema &amp; Media Production Studio</p>
 
           <h1 className="hero-title" style={{ display: 'flex', flexWrap: 'wrap', gap: '0 0.25em' }}>
-            <SplitWord word="We"       color="#f0ede8" wKey="w1" />
-            <SplitWord word="Engineer" color="#f0ede8" wKey="w2" />
-            <SplitWord word="Your"     color="#f0ede8" wKey="w3" />
-            <SplitWord word="Vision"   color="#8fa68e" wKey="w4" />
-            <SplitWord word="Into"     color="#f0ede8" wKey="w5" />
-            <SplitWord word="Reality"  color="#8fa68e" wKey="w6" />
+            <SplitWord word="We" color="#f0ede8" wKey="w1" />
+            <SplitWord word="Direct." color="#e6c875" wKey="w2" />
+            <SplitWord word="We" color="#f0ede8" wKey="w3" />
+            <SplitWord word="Film." color="#e6c875" wKey="w4" />
+            <SplitWord word="We" color="#f0ede8" wKey="w5" />
+            <SplitWord word="Produce." color="#10b981" wKey="w6" />
           </h1>
 
           <p className="hero-desc">
-            Premium, data-driven web solutions for ambitious<br />
-            organisations that demand digital dominance.
+            High-impact visual production house for brands, commercial ad campaigns, live event coverage, and cinema storytelling.
           </p>
 
           <div className="hero-actions">
-            <Link to="/contact" className="btn-accent hover-target">Start Your Project</Link>
-            <Link to="/work"    className="btn-ghost  hover-target">View Our Work</Link>
+            <button
+              onClick={() => setSelectedVideo(FEATURED_SHOWREEL)}
+              className="btn-accent hover-target play-showreel-btn"
+            >
+              <span className="play-icon">▶</span> Watch 2026 Showreel
+            </button>
+            <Link to="/contact" className="btn-ghost hover-target">
+              Book a Production
+            </Link>
           </div>
         </div>
       </section>
@@ -193,105 +252,191 @@ const Home = () => {
       {/* ══════════════ TICKER ══════════════ */}
       <div className="ticker-wrap" aria-hidden="true">
         <div className="ticker">
-          {['LOCAL SEO DOMINANCE','DIGITAL IMMERSION','OWNING THE DATA','SALES MACHINE',
-            'LOCAL SEO DOMINANCE','DIGITAL IMMERSION','OWNING THE DATA','SALES MACHINE'].map((t, i) => (
-            <span key={i} className="ticker-item">{t}<span className="ticker-sep">✦</span></span>
-          ))}
+          <div className="ticker-track">
+            {[
+              'BRAND AD FILMING', 'LIVE EVENT COVERAGE', 'COMMERCIAL PRODUCTION', 'HIGH-VOLUME REELS', '4K CINEMA GEAR',
+              'BRAND AD FILMING', 'LIVE EVENT COVERAGE', 'COMMERCIAL PRODUCTION', 'HIGH-VOLUME REELS', '4K CINEMA GEAR'
+            ].map((t, i) => (
+              <span key={i} className="ticker-item">
+                {t}<span className="ticker-sep">✦</span>
+              </span>
+            ))}
+          </div>
+          <div className="ticker-track" aria-hidden="true">
+            {[
+              'BRAND AD FILMING', 'LIVE EVENT COVERAGE', 'COMMERCIAL PRODUCTION', 'HIGH-VOLUME REELS', '4K CINEMA GEAR',
+              'BRAND AD FILMING', 'LIVE EVENT COVERAGE', 'COMMERCIAL PRODUCTION', 'HIGH-VOLUME REELS', '4K CINEMA GEAR'
+            ].map((t, i) => (
+              <span key={`dup-${i}`} className="ticker-item">
+                {t}<span className="ticker-sep">✦</span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* ══════════════ BENTO — Vibrel Difference ══════════════ */}
-      <section className="bento-section" aria-labelledby="bento-heading">
+      {/* ══════════════ LIVE PRODUCTION SHOWCASE ══════════════ */}
+      <section className="prod-works-section">
         <div className="container">
-          <div className="bento-header">
-            <h2 className="section-title" id="bento-heading">The Vibrel<br /><em>Difference</em></h2>
+          <div className="prod-works-header">
+            <div>
+              <p className="overline">Featured Work</p>
+              <h2 className="section-title">Cinematic <em>Productions</em></h2>
+            </div>
+            <Link to="/work" className="btn-ghost hover-target view-all-link">
+              Explore All Works →
+            </Link>
           </div>
-          <div className="bento-grid">
-            {BENTO_CARDS.map((card, i) => (
-              <div
-                key={i}
-                className={`bento-card glass-card hover-target${card.large ? ' bento-large' : ''}`}
-              >
-                <h3 className="bento-title">
-                  {card.title.split('\n').map((line, j) => (
-                    <React.Fragment key={j}>{line}{j === 0 && <br />}</React.Fragment>
-                  ))}
-                </h3>
-                <p className="bento-desc">{card.desc}</p>
-              </div>
+
+          <div className="prod-works-grid">
+            {PRODUCTION_PROJECTS.map((project) => (
+              <AutoplayVideoCard
+                key={project.id}
+                project={project}
+                isUnmuted={unmutedVideoId === project.id}
+                onAudioToggle={handleAudioToggle}
+                onSelect={setSelectedVideo}
+                registerRef={registerVideoRef}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════ STATEMENT ══════════════ */}
-      <section className="statement-section" aria-label="Our Mission">
-        <div className="statement-text">
-          <p className="overline" style={{ marginBottom: '1.5rem', opacity: 0.7 }}>Our Mission</p>
-          <h2 className="statement-headline">
-            Turn digital interactions<br />
-            into measurable<br />
-            <em>expansion.</em>
-          </h2>
-        </div>
-      </section>
-
-      {/* ══════════════ TESTIMONIALS ══════════════ */}
-      <section className="testimonials-section" aria-labelledby="testimonials-heading">
+      {/* ══════════════ IMPACT STATS ══════════════ */}
+      <section className="prod-stats-bar">
         <div className="container">
-          <p className="overline" id="testimonials-heading" style={{ marginBottom: '4rem', textAlign: 'center' }}>
-            Client Success
-          </p>
-          <div className="testimonials-grid">
-            {TESTIMONIALS.map((t, i) => (
-              <div className="testimonial-block" key={i}>
-                <p className="testimonial-quote">{t.quote}</p>
-                <div className="testimonial-author">
-                  <img
-                    src={t.img}
-                    alt={t.name}
-                    width="56"
-                    height="56"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div>
-                    <h4>{t.name}</h4>
-                    <p>{t.role}</p>
-                  </div>
-                </div>
+          <div className="stats-grid">
+            {FEATURED_SHOWREEL.stats.map((stat, i) => (
+              <div key={i} className="stat-box">
+                <span className="stat-val">{stat.value}</span>
+                <span className="stat-lbl">{stat.label}</span>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════ FOOTER / CTA ══════════════ */}
-      <footer className="site-footer" role="contentinfo">
-        <div className="footer-watermark" aria-hidden="true">VIBREL</div>
-        <div className="footer-content">
-          <h2 className="footer-cta-title">
-            Ready to<br /><em>Dominate?</em>
-          </h2>
-          <Link to="/contact" className="btn-accent hover-target" style={{ marginTop: '2.5rem', display: 'inline-flex' }}>
-            Build with Vibrel
-          </Link>
-          <div className="footer-bottom">
-            <p>© {new Date().getFullYear()} Vibrel. Premium Web Solutions.</p>
-            <div className="footer-links">
-              <a
-                href="https://wa.me/918882636063?text=Hi!%20Can%20we%20connect%20to%20discuss%20a%20potential%20website%20project"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover-target"
-              >
-                WhatsApp
-              </a>
-              <a href="mailto:connect.vibrel@gmail.com" className="hover-target">Email</a>
+            <div className="stat-box">
+              <span className="stat-val">100%</span>
+              <span className="stat-lbl">On-Time Master Delivery</span>
             </div>
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* ══════════════ CAPABILITIES BENTO ══════════════ */}
+      <section className="bento-section" aria-labelledby="bento-heading">
+        <div className="container">
+          <div className="bento-header text-center">
+            <p className="overline">Full-Spectrum Media Studio</p>
+            <h2 className="section-title" id="bento-heading">Our Production <em>Capabilities</em></h2>
+            <p className="bento-subtitle">End-to-end cinema production pipeline engineered for brand impact, broadcast standards, and high conversion.</p>
+          </div>
+
+          <div className="bento-grid">
+            {/* Card 01 — Featured Large */}
+            <div className="bento-card glass-card bento-card-large">
+              <div className="bento-card-top">
+                <span className="bento-num">01 / FEATURED</span>
+                <span className="bento-badge badge-gold">CINEMA 4K HDR</span>
+              </div>
+              <div className="bento-card-body">
+                <h3 className="bento-title">Commercial &amp; Brand Ad Filming</h3>
+                <p className="bento-desc">
+                  From high-concept scriptwriting and director storyboards to broadcast cinema camera setups (Arri / Sony FX Line). We engineer television commercials and digital ad campaigns designed for conversion and brand dominance.
+                </p>
+              </div>
+              <div className="bento-card-footer">
+                <span className="bento-chip">Arri / Sony Cinema</span>
+                <span className="bento-chip">Broadcast Audio</span>
+                <span className="bento-chip">16:9 &amp; 9:16 Masters</span>
+              </div>
+            </div>
+
+            {/* Card 02 — Event Coverage */}
+            <div className="bento-card glass-card">
+              <div className="bento-card-top">
+                <span className="bento-num">02</span>
+                <span className="bento-badge">MULTI-CAM</span>
+              </div>
+              <div className="bento-card-body">
+                <h3 className="bento-title">Live Event Coverage</h3>
+                <p className="bento-desc">
+                  Multi-camera dynamic shooting for corporate summits, music festivals, luxury product launches, and galas with rapid 24-48h aftermovie turnaround.
+                </p>
+              </div>
+              <div className="bento-card-footer">
+                <span className="bento-chip">24-48h Delivery</span>
+                <span className="bento-chip">Drone Aerials</span>
+              </div>
+            </div>
+
+            {/* Card 03 — Social Reels */}
+            <div className="bento-card glass-card">
+              <div className="bento-card-top">
+                <span className="bento-num">03</span>
+                <span className="bento-badge">VERTICAL VIRALITY</span>
+              </div>
+              <div className="bento-card-body">
+                <h3 className="bento-title">High-Volume Reels &amp; Shorts</h3>
+                <p className="bento-desc">
+                  Fast-cut vertical video production optimized for Instagram Reels, YouTube Shorts, and TikTok campaigns with sound design and hook editing.
+                </p>
+              </div>
+              <div className="bento-card-footer">
+                <span className="bento-chip">Monthly Buckets</span>
+                <span className="bento-chip">Sound Design</span>
+              </div>
+            </div>
+
+            {/* Card 04 — Post-Production */}
+            <div className="bento-card glass-card bento-card-wide">
+              <div className="bento-card-top">
+                <span className="bento-num">04</span>
+                <span className="bento-badge badge-emerald">DAVINCI MASTER</span>
+              </div>
+              <div className="bento-card-body">
+                <h3 className="bento-title">Full Post-Production &amp; Color Grading</h3>
+                <p className="bento-desc">
+                  DaVinci Resolve Master Color Grading, sound engineering, custom voiceovers, VFX, title animation, and multi-ratio master export.
+                </p>
+              </div>
+              <div className="bento-card-footer">
+                <span className="bento-chip">Color Grading</span>
+                <span className="bento-chip">VFX &amp; Motion</span>
+                <span className="bento-chip">Spatial Audio</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ WEB STUDIO BANNER ══════════════ */}
+      <section className="web-banner-section">
+        <div className="container">
+          <div className="web-banner-card glass-card">
+            <div>
+              <span className="web-banner-badge">WEB STUDIO DIVISION</span>
+              <h3 className="web-banner-title">Need a High-Converting Website for Your Brand?</h3>
+              <p className="web-banner-desc">
+                We also build lightning-fast, high-performance websites &amp; local SEO systems designed to convert viewers into paying customers.
+              </p>
+            </div>
+            <Link to="/web-services" className="btn-accent hover-target">
+              Explore Web Studio →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* Video Lightbox Modal */}
+      <VideoModal
+        isOpen={!!selectedVideo}
+        onClose={() => setSelectedVideo(null)}
+        videoUrl={selectedVideo?.videoUrl}
+        title={selectedVideo?.title}
+        client={selectedVideo?.client}
+        deliverables={selectedVideo?.deliverables}
+      />
     </div>
   );
 };
